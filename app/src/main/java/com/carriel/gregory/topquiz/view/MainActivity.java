@@ -11,12 +11,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.carriel.gregory.topquiz.R;
+import com.carriel.gregory.topquiz.controler.Control;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextViewWelcome;
     private EditText mEditTextName;
     private Button mButtonPlayGame;
+    private Control mControl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         mTextViewWelcome=findViewById(R.id.activity_main_msg_welcom_txt);
         mEditTextName=findViewById(R.id.activity_main_name_editTxt);
         mButtonPlayGame=findViewById(R.id.activity_main_play_btn);
+        mControl=Control.getInstance();
     }
 
     /**
@@ -70,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         mButtonPlayGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String mName=mEditTextName.getText().toString();
+                mControl.setName(mName);
                 Intent myIntent=new Intent(MainActivity.this, GameActivity.class);
                 startActivity(myIntent);
             }
