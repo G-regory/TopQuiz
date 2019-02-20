@@ -1,4 +1,4 @@
-package com.carriel.gregory.topquiz;
+package com.carriel.gregory.topquiz.view;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.carriel.gregory.topquiz.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         mButtonPlayGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent=new Intent(MainActivity.this,GameActivity.class);
+                Intent myIntent=new Intent(MainActivity.this, GameActivity.class);
                 startActivity(myIntent);
             }
         });

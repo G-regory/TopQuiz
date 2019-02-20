@@ -11,6 +11,7 @@
     <style name="buttonAnswer">
         <item name="android:textColor">@android:color/holo_blue_dark</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
 </resources>

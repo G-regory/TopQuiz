@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GameActivity">
+    tools:context=".view.GameActivity">
 
     <TextView
         android:id="@+id/game_activity_ask_console_txt"
@@ -24,36 +24,44 @@
     <Button
         android:id="@+id/game_activity_answer1_btn"
         style="@style/buttonAnswer"
-        android:layout_width="411dp"
+        android:layout_width="0dp"
         android:layout_height="94dp"
         android:text="Answer 1"
         app:layout_constraintBottom_toTopOf="@+id/game_activity_answer2_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/game_activity_ask_console_txt" />
 
     <Button
         android:id="@+id/game_activity_answer2_btn"
         style="@style/buttonAnswer"
-        android:layout_width="411dp"
+        android:layout_width="0dp"
         android:layout_height="94dp"
         android:text="Answer 2"
         app:layout_constraintBottom_toTopOf="@+id/game_activity_answer3_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/game_activity_answer1_btn" />
 
     <Button
         android:id="@+id/game_activity_answer3_btn"
         style="@style/buttonAnswer"
-        android:layout_width="411dp"
+        android:layout_width="0dp"
         android:layout_height="94dp"
         android:text="answer 3"
         app:layout_constraintBottom_toTopOf="@+id/game_activity_answer4_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/game_activity_answer2_btn" />
 
     <Button
         android:id="@+id/game_activity_answer4_btn"
         style="@style/buttonAnswer"
-        android:layout_width="411dp"
+        android:layout_width="0dp"
         android:layout_height="94dp"
         android:text="answer 4"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/game_activity_answer3_btn" />
 </android.support.constraint.ConstraintLayout>

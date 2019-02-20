@@ -1,7 +1,9 @@
-package com.carriel.gregory.topquiz;
+package com.carriel.gregory.topquiz.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.carriel.gregory.topquiz.R;
 
 public class GameActivity extends AppCompatActivity {
 
