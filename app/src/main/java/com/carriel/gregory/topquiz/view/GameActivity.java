@@ -1,6 +1,7 @@
 package com.carriel.gregory.topquiz.view;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,8 @@ import com.carriel.gregory.topquiz.model.Question;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener{
 
+    //recover score from GameActivity
+    public static final String BUNDLE_EXTRA_SCORE = "BUNDLE_EXTRA_SCORE";
     private TextView mTextViewQuestion;
     private Button mButtonAnswer1;
     private Button mButtonAnswer2;
@@ -127,6 +130,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 .setNegativeButton("End Game", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Intent mainActivityIntent = new Intent(GameActivity.this, MainActivity.class);
+                        mainActivityIntent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
+                        //communique to the activity from call
+                        setResult(RESULT_OK, mainActivityIntent);
                         finish();
                     }
                 })

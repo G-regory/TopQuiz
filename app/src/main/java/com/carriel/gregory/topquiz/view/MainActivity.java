@@ -2,6 +2,7 @@ package com.carriel.gregory.topquiz.view;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private Control mControl;
     private SharedPreferences mSharedPreferences;
     private String mName="";
+    public static final int GAME_ACTIVITY_REQUEST_CODE= 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                //if the size of name is taller of 3 enable button
                 mButtonPlayGame.setEnabled(s.length() > 3);
                 changeActivity();
             }
@@ -71,7 +73,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(GAME_ACTIVITY_REQUEST_CODE == requestCode && RESULT_OK == resultCode ){
+            int score = data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
+            Toast.makeText(this, ""+score, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /**
+     * recover name and save name
      * change activity from MainActivity to GameActivity
      */
     private void changeActivity(){
@@ -82,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
                 mControl.setName(mName );
                 mSharedPreferences.edit().putString("name",mName).apply();
                 Intent myIntent=new Intent(MainActivity.this, GameActivity.class);
-                startActivity(myIntent);
+                //recover score from GameActivity
+                startActivityForResult(myIntent,GAME_ACTIVITY_REQUEST_CODE  );//intent, ID for know who send request
             }
         });
     }
