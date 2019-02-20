@@ -1,9 +1,11 @@
 package com.carriel.gregory.topquiz;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         init();
         controlNameInput();
+
     }
 
     /**
@@ -47,18 +50,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                mButtonPlayGame.setEnabled(s.length()>3);
-// if(s.length()>3){
-//                    mButtonPlayGame.setEnabled(true);
-//                }else {
-//                    mButtonPlayGame.setEnabled(false);
-//
-//                }
+                mButtonPlayGame.setEnabled(s.length() > 3);
+                changeActivity();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+    }
+
+    /**
+     * change activity from MainActivity to GameActivity
+     */
+    private void changeActivity(){
+        mButtonPlayGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent=new Intent(MainActivity.this,GameActivity.class);
+                startActivity(myIntent);
             }
         });
     }
