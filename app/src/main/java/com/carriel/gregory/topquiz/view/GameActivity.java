@@ -1,9 +1,11 @@
 package com.carriel.gregory.topquiz.view;
 
 import android.content.DialogInterface;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private QuestionBanks mQuestionBanks;
     private int mScore;
     private int mNumberOfQuestion;
+    private boolean mEnableTouchEvents;
 
 
 
@@ -46,7 +49,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mControl=Control.getInstance();
         mScore=0;
         mNumberOfQuestion=4;
-
+        mEnableTouchEvents=true;
 
         mButtonAnswer1.setTag(0);
         mButtonAnswer2.setTag(1);
@@ -82,14 +85,30 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }else{
             Toast.makeText(this, "Bad Answer ", Toast.LENGTH_SHORT).show();
         }
+        mEnableTouchEvents=false;
 
-        if(--mNumberOfQuestion == 0){
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mEnableTouchEvents=true;
+                startQuestion();
+            }
+        },2000);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return mEnableTouchEvents && super.dispatchTouchEvent(ev);
+    }
+
+    private void startQuestion() {
+        if(--mNumberOfQuestion == 0){ //if last question end game
             endGame();
-        }else {
+        }else {  //next question
             mCurrentQuestion=mQuestionBanks.getQuestion();
             displayQuestion(mCurrentQuestion);
         }
-
     }
 
     private void endGame() {
@@ -100,8 +119,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 .setPositiveButton("New Game", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mCurrentQuestion=mQuestionBanks.getQuestion();
-                        displayQuestion(mCurrentQuestion);
+                        mNumberOfQuestion=4;
+                        mScore=0;
+
                     }
                 })
                 .setNegativeButton("End Game", new DialogInterface.OnClickListener() {
