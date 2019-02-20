@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         init();
         controlNameInput();
-
     }
 
     /**
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String mName=mEditTextName.getText().toString();
-                mControl.setName(mName);
+                mControl.setName(mName );
                 Intent myIntent=new Intent(MainActivity.this, GameActivity.class);
                 startActivity(myIntent);
             }

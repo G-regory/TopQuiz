@@ -8,6 +8,7 @@ public class Question {
     List<String> mChoiselist;
     int mAnswerIndex;
 
+
     public Question(String question, List<String> choiselist, int answerIndex) {
         setQuestion(question);
         setChoiselist(choiselist);
