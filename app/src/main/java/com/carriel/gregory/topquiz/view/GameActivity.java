@@ -1,5 +1,7 @@
 package com.carriel.gregory.topquiz.view;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,14 +16,17 @@ import com.carriel.gregory.topquiz.model.Question;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener{
 
-    TextView mTextViewQuestion;
-    Button mButtonAnswer1;
-    Button mButtonAnswer2;
-    Button mButtonAnswer3;
-    Button mButtonAnswer4;
+    private TextView mTextViewQuestion;
+    private Button mButtonAnswer1;
+    private Button mButtonAnswer2;
+    private Button mButtonAnswer3;
+    private Button mButtonAnswer4;
     private Control mControl;
-    Question mcurrentQuestion;
-    QuestionBanks mQuestionBanks;
+    private Question mCurrentQuestion;
+    private QuestionBanks mQuestionBanks;
+    private int mScore;
+    private int mNumberOfQuestion;
+
 
 
     @Override
@@ -29,6 +34,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         init();
+        displayQuestion(mCurrentQuestion);
     }
 
     private void init() {
@@ -38,6 +44,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mButtonAnswer3=findViewById(R.id.game_activity_answer3_btn);
         mButtonAnswer4=findViewById(R.id.game_activity_answer4_btn);
         mControl=Control.getInstance();
+        mScore=0;
+        mNumberOfQuestion=4;
+
 
         mButtonAnswer1.setTag(0);
         mButtonAnswer2.setTag(1);
@@ -49,10 +58,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mButtonAnswer3.setOnClickListener(this);
         mButtonAnswer4.setOnClickListener(this);
 
-        mQuestionBanks=mControl.generateQestions();
-        mcurrentQuestion = mQuestionBanks.getQuestion();
-        displayQuestion(mcurrentQuestion);
+        //all Question is store here
+        mQuestionBanks=mControl.generateQuestions();
 
+        mCurrentQuestion = mQuestionBanks.getQuestion();
     }
 
     private void displayQuestion(Question pQuestion) {
@@ -67,11 +76,41 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         int reponseIndex= (int) v.getTag();
-        if(reponseIndex ==mcurrentQuestion.getAnswerIndex()){
+        if(reponseIndex == mCurrentQuestion.getAnswerIndex()){
             Toast.makeText(this, "Good Answer ", Toast.LENGTH_SHORT).show();
+            mScore++;
         }else{
             Toast.makeText(this, "Bad Answer ", Toast.LENGTH_SHORT).show();
         }
 
+        if(--mNumberOfQuestion == 0){
+            endGame();
+        }else {
+            mCurrentQuestion=mQuestionBanks.getQuestion();
+            displayQuestion(mCurrentQuestion);
+        }
+
+    }
+
+    private void endGame() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Fin de la partie")
+                .setMessage("End of Game, your score is "+mScore)
+
+                .setPositiveButton("New Game", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mCurrentQuestion=mQuestionBanks.getQuestion();
+                        displayQuestion(mCurrentQuestion);
+                    }
+                })
+                .setNegativeButton("End Game", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .create()
+                .show();
     }
 }

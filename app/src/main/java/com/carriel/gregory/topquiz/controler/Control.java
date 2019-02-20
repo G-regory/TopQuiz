@@ -47,7 +47,7 @@ public class Control {
     /**
      * generate a question
      */
-    public QuestionBanks generateQestions(){
+    public QuestionBanks generateQuestions(){
         Question question1 = new Question("What is the name of the current french president?",
                 Arrays.asList("François Hollande", "Emmanuel Macron", "Jacques Chirac", "François Mitterand"),
                 1);
