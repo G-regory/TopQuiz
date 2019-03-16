@@ -33,16 +33,14 @@
 
     <Button
         android:id="@+id/activity_main_classement"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Classement"
-        android:padding="50dp"
-        android:layout_marginTop="30dp"
         android:layout_gravity="center"
-        android:visibility="invisible"
-        android:textColor="@android:color/holo_green_dark"
         android:background="@android:drawable/btn_star_big_on"
-        />
+        android:text="top 5"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        android:visibility="invisible" />
 
 </LinearLayout>
 

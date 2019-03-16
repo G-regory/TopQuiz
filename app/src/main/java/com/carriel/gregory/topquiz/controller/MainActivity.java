@@ -11,22 +11,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.carriel.gregory.topquiz.R;
+import com.carriel.gregory.topquiz.controller.sql.MySqlite;
 import com.carriel.gregory.topquiz.model.User;
 
-import static java.lang.System.out;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-
     public static final int BUNDLE_CODE_REQUEST = 52;
-    public static final String PREF_KEY_FIRSTNAME = "prenom";
+    public static final String PREF_KEY_FIRSTNAME = "firstname";
     public static final String PREF_KEY_SCORE = "score";
     private TextView mGreetingText;
     private EditText mNameInput;
-    private Button mPlayButton, mClassementButton;
+    private Button mPlayButton, mRankingButton;
     private User mUser;
+    private MySqlite  mMySqlite;
+    private List<User> listUsers;
+    boolean isBigger;
+
 
     private SharedPreferences mPreferences;
 
@@ -36,9 +41,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         init();
-
-        greetUser();
-
 
         mNameInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -57,33 +59,45 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String firstName = mNameInput.getText().toString();
-                mUser.setFirstname(firstName);
+                mUser.setFirstname(mNameInput.getText().toString());
                 mPreferences.edit().putString(PREF_KEY_FIRSTNAME,mUser.getFirstname()).apply();
 
                 // User clicked the button
                 Intent gameActivityIntent = new Intent(MainActivity.this, GameActivity.class);
                 startActivityForResult(gameActivityIntent, BUNDLE_CODE_REQUEST);
 
-
             }
+        });
+
+        mRankingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent rankingIntent = new Intent(MainActivity.this, RankingActivity.class);
+                rankingIntent.putExtra(PREF_KEY_FIRSTNAME,mUser.getFirstname());
+                rankingIntent.putExtra(PREF_KEY_SCORE, mUser.getScoreUser() );
+                Toast.makeText(MainActivity.this, "score "+mUser.getScoreUser(), Toast.LENGTH_SHORT).show();
+                startActivity(rankingIntent);
+            }
+
         });
 
     }
 
     private void init() {
         mUser = new User();
+        mMySqlite= new MySqlite(this);
+        isBigger=false;
+
+        listUsers= mMySqlite.restore();
 
         mGreetingText =findViewById(R.id.activity_main_greeting_txt);
         mNameInput =  findViewById(R.id.activity_main_name_input);
         mPlayButton = findViewById(R.id.activity_main_play_btn);
-        mClassementButton= findViewById(R.id.activity_main_classement);
+        mRankingButton = findViewById(R.id.activity_main_classement);
 
         mPreferences=getPreferences(MODE_PRIVATE);
 
@@ -97,6 +111,10 @@ public class MainActivity extends AppCompatActivity {
             int score=data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
             mPreferences.edit().putInt(PREF_KEY_SCORE, score).apply();
 
+            if(score>0){
+                mRankingButton.setVisibility(View.VISIBLE);
+            }
+
             greetUser();
         }
 
@@ -104,51 +122,43 @@ public class MainActivity extends AppCompatActivity {
 
     private void greetUser() {
 
+        String firstName=mPreferences.getString(PREF_KEY_FIRSTNAME,null);
+        mUser.setFirstname(firstName);
+        int score = mPreferences.getInt(PREF_KEY_SCORE, 0);
+        mUser.setScoreUser(score);
+        int counter = 0;
+        isBigger=false;
+        for(User tempUser:listUsers){
+            if(tempUser.getFirstname().equals(mUser.getFirstname())){
+                counter++;
+                if(mUser.getScoreUser() > tempUser.getScoreUser()){
+                    isBigger=true;
+                }
+            }
+        }
 
-        String firstName=mPreferences.getString("prenom",null);
-        int score= mPreferences.getInt(PREF_KEY_SCORE, 0);
-        mGreetingText.setText("Welcom back, "+firstName+"!\nYour last score was "+score+", will you do better this time?");
+        if(counter>0){
+            Toast.makeText(this, "c'est le même nom", Toast.LENGTH_SHORT).show();
+            if(isBigger) {
+                mMySqlite.updateData(mUser);
+            }
+        }else {
+            Toast.makeText(this, "ce n'est pas le même nom", Toast.LENGTH_SHORT).show();
+            mMySqlite.recordData(mUser);
+        }
+
+        mGreetingText.setText("Welcome back, "+mUser.getFirstname()+" !\nYour last score was "+score+", will you do better this time?");
         mNameInput.setText(firstName);
-        mNameInput.setSelection(firstName.length());
+//        mNameInput.setSelection(firstName.length());
         mPlayButton.setEnabled(true);
 
     }
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        out.println("MainActivity::onStart()");
-    }
-
     @Override
     protected void onResume() {
+        listUsers= mMySqlite.restore();
+
         super.onResume();
-
-        out.println("MainActivity::onResume()");
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        out.println("MainActivity::onPause()");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        out.println("MainActivity::onStop()");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        out.println("MainActivity::onDestroy()");
-    }
-
-    }
+}
 

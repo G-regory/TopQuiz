@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.carriel.gregory.topquiz.R;
 import com.carriel.gregory.topquiz.model.Question;
 import com.carriel.gregory.topquiz.model.QuestionBank;
+import com.carriel.gregory.topquiz.model.User;
 
 import java.util.Arrays;
 
@@ -24,11 +25,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public static final String BUNDLE_EXTRA_SCORE = "BUNDLE_EXTRA_SCORE";
     public static final String BUNDLE_STATE_NUMBER_QUESTION = "current number question";
     public static final String BUNDLE_STATE_SCORE = "current score";
-    public static final String BUNDLE_STATE_QUESTION= "current question";
-    public static final String BUNDLE_STATE_ANSWER1= "choix 1";
-    public static final String BUNDLE_STATE_ANSWER2= "choix 2";
-    public static final String BUNDLE_STATE_ANSWER3= "choix 3";
-    public static final String BUNDLE_STATE_ANSWER4= "choix 4";
+
+    private User mUser;
 
 
     private TextView mQuestionTextView;
@@ -83,6 +81,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mAnswerButton2 = findViewById(R.id.activity_game_answer2_btn);
         mAnswerButton3 = findViewById(R.id.activity_game_answer3_btn);
         mAnswerButton4 = findViewById(R.id.activity_game_answer4_btn);
+
+        mUser=new User();
 
         mAnswerButton1.setTag(0);
         mAnswerButton2.setTag(1);
@@ -160,41 +160,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-        System.out.println("GameActivity::onStart()");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        System.out.println("GameActivity::onResume()");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        System.out.println("GameActivity::onPause()");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        System.out.println("GameActivity::onStop()");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        System.out.println("GameActivity::onDestroy()");
-    }
-
-    @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return mEnableTouchEvent && super.dispatchTouchEvent(ev);
     }
@@ -254,7 +219,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         Intent myIntent = new Intent();
                         myIntent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
                         setResult(RESULT_OK, myIntent);
-
+                        mUser.setScoreUser(mScore);
                         finish();
 
                     }
