@@ -27,6 +27,7 @@ public class MySqlite extends SQLiteOpenHelper {
     private final String CREATE_TABLE= "create table  "
             + TABLE_NAME + " (" + COLUMN_ID + " integer primary key autoincrement,"
             + COLUMN_FIRST_NAME + " text,"+ COLUMN_SCORE_USER + " Integer) ";
+    private final int TOTAL_NUMBER_TOP_SCORE=5;
 
 
     public MySqlite(Context context) {
@@ -51,13 +52,12 @@ public class MySqlite extends SQLiteOpenHelper {
         contentValues.put(COLUMN_FIRST_NAME, pUSER.getFirstname());
         contentValues.put(COLUMN_SCORE_USER, pUSER.getScoreUser());
         db.insert(TABLE_NAME,null,contentValues);
-        Log.d(TAG, "recordData: ok"+pUSER.toString());
     }
 
-    public List<User> restore(){
+    public List<User> restoreByNumber(){
         List<User>users = new ArrayList<>();
 
-        String stSQL="select DISTINCT "+COLUMN_FIRST_NAME+", "+COLUMN_SCORE_USER+" from "+TABLE_NAME+ " ORDER BY "+COLUMN_SCORE_USER+" DESC limit 5";
+        String stSQL="select DISTINCT "+COLUMN_FIRST_NAME+", "+COLUMN_SCORE_USER+" from "+TABLE_NAME+ " ORDER BY "+COLUMN_SCORE_USER+" desc limit "+TOTAL_NUMBER_TOP_SCORE;
 
         db=getReadableDatabase();
         Cursor cursor = db.rawQuery(stSQL,null);
@@ -65,9 +65,26 @@ public class MySqlite extends SQLiteOpenHelper {
                 User user=new User();
                 user.setScoreUser(cursor.getInt(cursor.getColumnIndex(COLUMN_SCORE_USER)));
                 user.setFirstname(cursor.getString(cursor.getColumnIndex(COLUMN_FIRST_NAME)));
-                Log.d(TAG, "restore: "+user.toString());
                 users.add(user);
             }
+        cursor.close();
+
+        return users;
+    }
+
+    public List<User> restoreByAlphabet(){
+        List<User>users = new ArrayList<>();
+
+        String stSQL="select DISTINCT "+COLUMN_FIRST_NAME+", "+COLUMN_SCORE_USER+" from "+TABLE_NAME+ " ORDER BY "+COLUMN_FIRST_NAME+" asc limit "+TOTAL_NUMBER_TOP_SCORE;
+
+        db=getReadableDatabase();
+        Cursor cursor = db.rawQuery(stSQL,null);
+        for (cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
+            User user=new User();
+            user.setScoreUser(cursor.getInt(cursor.getColumnIndex(COLUMN_SCORE_USER)));
+            user.setFirstname(cursor.getString(cursor.getColumnIndex(COLUMN_FIRST_NAME)));
+            users.add(user);
+        }
         cursor.close();
 
         return users;
@@ -82,8 +99,6 @@ public class MySqlite extends SQLiteOpenHelper {
         contentValues.put(COLUMN_SCORE_USER, pUser.getScoreUser());
         try{
             db.update(TABLE_NAME,contentValues, where,null );
-            Log.d(TAG, "updateData: ok"+pUser.toString());
-
         }catch (SQLException e){
             Log.d(TAG, "updateData: failed");
         }

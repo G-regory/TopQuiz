@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private User mUser;
     private MySqlite  mMySqlite;
     private List<User> listUsers;
-    boolean isBigger;
+    boolean isBigger, isEqual;
 
 
     private SharedPreferences mPreferences;
@@ -63,7 +63,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                mUser.setFirstname(mNameInput.getText().toString());
+                String strTMP = mNameInput.getText().toString();
+                String firstName = strTMP.substring(0, 1).toUpperCase() + strTMP.substring(1);
+
+                mUser.setFirstname(firstName);
                 mPreferences.edit().putString(PREF_KEY_FIRSTNAME,mUser.getFirstname()).apply();
 
                 // User clicked the button
@@ -91,8 +94,9 @@ public class MainActivity extends AppCompatActivity {
         mUser = new User();
         mMySqlite= new MySqlite(this);
         isBigger=false;
+        isEqual=false;
 
-        listUsers= mMySqlite.restore();
+        listUsers= mMySqlite.restoreByNumber();
 
         mGreetingText =findViewById(R.id.activity_main_greeting_txt);
         mNameInput =  findViewById(R.id.activity_main_name_input);
@@ -111,10 +115,6 @@ public class MainActivity extends AppCompatActivity {
             int score=data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
             mPreferences.edit().putInt(PREF_KEY_SCORE, score).apply();
 
-            if(score>0){
-                mRankingButton.setVisibility(View.VISIBLE);
-            }
-
             greetUser();
         }
 
@@ -126,18 +126,20 @@ public class MainActivity extends AppCompatActivity {
         mUser.setFirstname(firstName);
         int score = mPreferences.getInt(PREF_KEY_SCORE, 0);
         mUser.setScoreUser(score);
-        int counter = 0;
+//        int counter = 0;
         isBigger=false;
+        isEqual=false;
         for(User tempUser:listUsers){
             if(tempUser.getFirstname().equals(mUser.getFirstname())){
-                counter++;
+//                counter++;
+                isEqual=true;
                 if(mUser.getScoreUser() > tempUser.getScoreUser()){
                     isBigger=true;
                 }
             }
         }
 
-        if(counter>0){
+        if(isEqual && isBigger){
             Toast.makeText(this, "c'est le même nom", Toast.LENGTH_SHORT).show();
             if(isBigger) {
                 mMySqlite.updateData(mUser);
@@ -149,14 +151,17 @@ public class MainActivity extends AppCompatActivity {
 
         mGreetingText.setText("Welcome back, "+mUser.getFirstname()+" !\nYour last score was "+score+", will you do better this time?");
         mNameInput.setText(firstName);
-//        mNameInput.setSelection(firstName.length());
+        mNameInput.setSelection(firstName.length());
         mPlayButton.setEnabled(true);
 
     }
 
     @Override
     protected void onResume() {
-        listUsers= mMySqlite.restore();
+        listUsers= mMySqlite.restoreByNumber();
+        if(listUsers.size()>0){
+            mRankingButton.setVisibility(View.VISIBLE);
+        }
 
         super.onResume();
     }
