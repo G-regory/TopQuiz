@@ -58,15 +58,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         init();
 
-        if (savedInstanceState!=null){
+        if (savedInstanceState!=null){  //
             mScore=savedInstanceState.getInt(BUNDLE_STATE_SCORE);
             mNumberOfQuestions=savedInstanceState.getInt(BUNDLE_STATE_NUMBER_QUESTION);
 
         }else {
-            mScore=0;  //score user
-            mNumberOfQuestions=4; //number max of question
+            mScore=0;  //default score user
+            mNumberOfQuestions=8; // number max of question
         }
 
+        //lance les questions
         playGame();
     }
 
@@ -144,8 +145,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 Arrays.asList(".bg", ".bm", ".bl", ".be"),
                 3);
 
-        Question question9 = new Question("What is the house number of The Simpsons?",
-                Arrays.asList("42", "101", "666", "742"),
+        Question question9 = new Question("What is the size of the Eiffel Tower?",
+                Arrays.asList("300m", "101m", "324m", "742m"),
                 3);
 
         return new QuestionBank(Arrays.asList(question1,
@@ -159,11 +160,22 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 question9));
     }
 
+    /**
+     * bloque l'écran temporairement
+     * @param ev
+     * @return
+     */
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return mEnableTouchEvent && super.dispatchTouchEvent(ev);
     }
 
+    /**
+     * lors du clique sur un bouton
+     * récupère son tag pour identifier le choix de l'utilisateur
+     * comparer avec la bonne réponse et retourner un message Toast
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         int reponseIndex = (int)v.getTag();
@@ -194,12 +206,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
+    /**
+     * lance les questions
+     */
     private void playGame() {
         mCurrentQuestion = mQuestionBank.getQuestion();
         displayQuestion(mCurrentQuestion);
     }
 
+    /**
+     * après le nombre max de question atteint
+     * propose à l'utilisateur de rejouer ou d'arrêter la partie
+     */
     private void endGame() {
 
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
@@ -210,7 +228,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         playGame();
-                        mNumberOfQuestions=4;
+                        mNumberOfQuestions=8;
                     }
                 })
                 .setNegativeButton("Non", new DialogInterface.OnClickListener() {

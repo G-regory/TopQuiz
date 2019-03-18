@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TopQuiz</string>
+    <string name="what_s_your_name">Welcome! What\'s your name?</string>
 </resources>

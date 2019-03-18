@@ -37,27 +37,31 @@ public class RankingActivity extends AppCompatActivity {
         mUser=new User();
         values= new ArrayList<>();
 
-        orderByNumber();
+        orderByNumber();  // affiche les 5 meilleurs score du meilleur au moins bon
 
 
         mButtonOrderScore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                orderByNumber();
+                orderByNumber(); //affiche les 5 meilleurs score du meilleur au moins bon
             }
         });
 
         mButtonOrderName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                orderByAlphabetically();
+                orderByAlphabetically();//affiche les noms par ordre alphabetique
             }
         });
 
 
     }
 
-    private void orderByNumber() {
+    /**
+     * récupère élément de la base
+     * nettoie la listView et affiche les meilleurs score dans l'ordre
+     */
+    protected void orderByNumber() {
         List<User> users=new ArrayList<>(mySqlite.restoreByNumber());
 
         values.clear();
@@ -70,7 +74,12 @@ public class RankingActivity extends AppCompatActivity {
         }
     }
 
-    private void orderByAlphabetically() {
+
+    /**
+     *récupère élément de la base
+     * nettoie la listView et affiche les noms dans l'ordre alphabetique
+     */
+    protected void orderByAlphabetically() {
 
         List<User> users=new ArrayList<>(mySqlite.restoreByAlphabet());
         values.clear();
